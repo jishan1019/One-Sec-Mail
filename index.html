@@ -4,68 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>1secMail API Demo</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-      }
-
-      .container {
-        background-color: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        width: 400px;
-        text-align: center;
-      }
-
-      button {
-        padding: 10px 20px;
-        margin: 10px 0;
-        border: none;
-        background-color: #007bff;
-        color: white;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
-
-      button:hover {
-        background-color: #0056b3;
-      }
-
-      .hidden {
-        display: none;
-      }
-
-      ul {
-        list-style-type: none;
-        padding: 0;
-      }
-
-      ul li {
-        background-color: #f9f9f9;
-        margin: 5px 0;
-        padding: 10px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
-
-      ul li:hover {
-        background-color: #e9e9e9;
-      }
-
-      p {
-        margin: 5px 0;
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
+
   <body>
     <div class="container">
       <h1>1secMail API Demo</h1>
@@ -86,88 +27,7 @@
         </div>
       </div>
     </div>
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const generateEmailBtn = document.getElementById("generateEmailBtn");
-        const checkMailboxBtn = document.getElementById("checkMailboxBtn");
-        const generatedEmailElement = document.getElementById("generatedEmail");
-        const emailContainer = document.getElementById("emailContainer");
-        const emailsListElement = document.getElementById("emails");
-        const emailDetailsElement = document.getElementById("emailDetails");
-        const emailFromElement = document.getElementById("emailFrom");
-        const emailSubjectElement = document.getElementById("emailSubject");
-        const emailDateElement = document.getElementById("emailDate");
-        const emailBodyElement = document.getElementById("emailBody");
-        let generatedEmail = "";
-        let emailParts = [];
 
-        const apiBaseUrl = "https://www.1secmail.com/api/v1/";
-
-        // Function to generate a random email address
-        async function generateRandomEmail() {
-          try {
-            const response = await fetch(
-              `${apiBaseUrl}?action=genRandomMailbox&count=1`
-            );
-            const emails = await response.json();
-            if (emails.length > 0) {
-              generatedEmail = emails[0];
-              generatedEmailElement.textContent = generatedEmail;
-              emailContainer.classList.remove("hidden");
-              emailParts = generatedEmail.split("@");
-            }
-          } catch (error) {
-            console.error("Error generating email:", error);
-          }
-        }
-
-        // Function to check the mailbox for received emails
-        async function checkMailbox() {
-          if (!generatedEmail) return;
-          try {
-            const response = await fetch(
-              `${apiBaseUrl}?action=getMessages&login=${emailParts[0]}&domain=${emailParts[1]}`
-            );
-            const emails = await response.json();
-            emailsListElement.innerHTML = "";
-            emailDetailsElement.classList.add("hidden");
-            if (emails.length > 0) {
-              emailsListElement.parentElement.classList.remove("hidden");
-              emails.forEach((email) => {
-                const li = document.createElement("li");
-                li.textContent = `${email.subject} - From: ${email.from}`;
-                li.addEventListener("click", () => fetchEmailDetails(email.id));
-                emailsListElement.appendChild(li);
-              });
-            } else {
-              emailsListElement.parentElement.classList.add("hidden");
-              alert("No emails found!");
-            }
-          } catch (error) {
-            console.error("Error checking mailbox:", error);
-          }
-        }
-
-        // Function to fetch email details
-        async function fetchEmailDetails(emailId) {
-          try {
-            const response = await fetch(
-              `${apiBaseUrl}?action=readMessage&login=${emailParts[0]}&domain=${emailParts[1]}&id=${emailId}`
-            );
-            const emailDetails = await response.json();
-            emailFromElement.textContent = emailDetails.from;
-            emailSubjectElement.textContent = emailDetails.subject;
-            emailDateElement.textContent = emailDetails.date;
-            emailBodyElement.textContent = emailDetails.body;
-            emailDetailsElement.classList.remove("hidden");
-          } catch (error) {
-            console.error("Error fetching email details:", error);
-          }
-        }
-
-        generateEmailBtn.addEventListener("click", generateRandomEmail);
-        checkMailboxBtn.addEventListener("click", checkMailbox);
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
 </html>
